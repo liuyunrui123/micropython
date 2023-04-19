@@ -50,7 +50,7 @@ SECTIONS
         _etext = .;
         __text_end__ = .;
     }
-    
+
     . = ALIGN(0x1000);  /* must define page align after .text */
 
         .plt :
@@ -104,7 +104,7 @@ SECTIONS
         *(.stack)
         __bss_end__ = .;
     }
-    
+
     _end = .;
 }
 

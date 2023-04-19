@@ -695,20 +695,21 @@ MP_NOINLINE int main_(int argc, char **argv) {
                 return invalid_args();
             }
         } else {
-            char *pathbuf = malloc(PATH_MAX);
-            char *basedir = realpath(argv[a], pathbuf);
-            if (basedir == NULL) {
-                mp_printf(&mp_stderr_print, "%s: can't open file '%s': [Errno %d] %s\n", argv[0], argv[a], errno, strerror(errno));
-                free(pathbuf);
-                // CPython exits with 2 in such case
-                ret = 2;
-                break;
-            }
+            // char *pathbuf = malloc(PATH_MAX);
+            // char *basedir = realpath(argv[a], pathbuf);
+            // mp_printf(&mp_stderr_print, "file name:%s, pathbuf:%s, PATH_MAX:%d\n", argv[a], pathbuf, PATH_MAX);
+            // if (basedir == NULL) {
+            //     mp_printf(&mp_stderr_print, "%s: can't open file '%s': [Errno %d] %s\n", argv[0], argv[a], errno, strerror(errno));
+            //     free(pathbuf);
+            //     // CPython exits with 2 in such case
+            //     ret = 2;
+            //     break;
+            // }
 
-            // Set base dir of the script as first entry in sys.path.
-            char *p = strrchr(basedir, '/');
-            path_items[0] = mp_obj_new_str_via_qstr(basedir, p - basedir);
-            free(pathbuf);
+            // // Set base dir of the script as first entry in sys.path.
+            // char *p = strrchr(basedir, '/');
+            // path_items[0] = mp_obj_new_str_via_qstr(basedir, p - basedir);
+            // free(pathbuf);
 
             set_sys_argv(argv, argc, a);
             ret = do_file(argv[a]);
