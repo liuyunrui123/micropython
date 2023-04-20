@@ -27,5 +27,8 @@
 // Set base feature level.
 #define MICROPY_CONFIG_ROM_LEVEL (MICROPY_CONFIG_ROM_LEVEL_EXTRA_FEATURES)
 
+#define MICROPY_HW_BOARD_NAME "K230 EVB"
+#define MICROPY_HW_MCU_NAME "K230"
+
 // Enable extra Unix features.
 #include "../mpconfigvariant_common.h"

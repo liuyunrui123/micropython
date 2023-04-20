@@ -87,12 +87,13 @@
 #define MICROPY_PY_SYS_EXC_INFO        (1)
 
 // Configure the "os" module with extra unix features.
-#define MICROPY_PY_UOS_INCLUDEFILE     "ports/unix/moduos.c"
+#define MICROPY_PY_UOS_INCLUDEFILE     "ports/rt-smart-riscv64/moduos.c"
 #define MICROPY_PY_UOS_ERRNO           (1)
 #define MICROPY_PY_UOS_GETENV_PUTENV_UNSETENV (1)
 #define MICROPY_PY_UOS_SEP             (1)
 #define MICROPY_PY_UOS_SYSTEM          (1)
 #define MICROPY_PY_UOS_URANDOM         (1)
+#define MICROPY_PY_UOS_UNAME           (1)
 
 // Enable the unix-specific "time" module.
 #define MICROPY_PY_UTIME               (1)

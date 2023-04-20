@@ -8,6 +8,9 @@ MICROPY_FORCE_32BIT = 0
 #  1 - use MicroPython version of readline
 MICROPY_USE_READLINE = 1
 
+# Enable raw repl to support serial port development tools
+MICROPY_EN_RAW_REPL = 1
+
 # btree module using Berkeley DB 1.xx
 MICROPY_PY_BTREE = 0
 

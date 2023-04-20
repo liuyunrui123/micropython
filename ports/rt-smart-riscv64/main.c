@@ -53,6 +53,9 @@
 #include "extmod/vfs_posix.h"
 #include "genhdr/mpversion.h"
 #include "input.h"
+#if MICROPY_EN_RAW_REPL
+#include "shared/runtime/pyexec.h"
+#endif
 
 // Command line options, with their defaults
 STATIC bool compile_only = false;
@@ -184,16 +187,26 @@ STATIC char *strjoin(const char *s1, int sep_char, const char *s2) {
 #endif
 
 STATIC int do_repl(void) {
+#if !MICROPY_EN_RAW_REPL
     mp_hal_stdout_tx_str(MICROPY_BANNER_NAME_AND_VERSION);
     mp_hal_stdout_tx_str("; " MICROPY_BANNER_MACHINE);
     mp_hal_stdout_tx_str("\nUse Ctrl-D to exit, Ctrl-E for paste mode\n");
-
+#endif
     #if MICROPY_USE_READLINE == 1
 
     // use MicroPython supplied readline
 
     vstr_t line;
     vstr_init(&line, 16);
+#if MICROPY_EN_RAW_REPL
+friendly_repl_reset:
+    mp_hal_stdout_tx_str(MICROPY_BANNER_NAME_AND_VERSION);
+    mp_hal_stdout_tx_str("; " MICROPY_BANNER_MACHINE);
+    mp_hal_stdout_tx_str("\r\n");
+    #if MICROPY_PY_BUILTINS_HELP
+    mp_hal_stdout_tx_str("Type \"help()\" for more information.\r\n");
+    #endif
+#endif
     for (;;) {
         mp_hal_stdio_mode_raw();
 
@@ -201,8 +214,21 @@ STATIC int do_repl(void) {
         vstr_reset(&line);
         int ret = readline(&line, mp_repl_get_ps1());
         mp_parse_input_kind_t parse_input_kind = MP_PARSE_SINGLE_INPUT;
-
+#if MICROPY_EN_RAW_REPL
+        if (ret == CHAR_CTRL_A) {
+            // change to raw REPL
+            mp_hal_stdout_tx_str("\r\n");
+            vstr_clear(&line);
+            pyexec_mode_kind = PYEXEC_MODE_RAW_REPL;
+            return 0;
+        } else if (ret == CHAR_CTRL_B) {
+            // reset friendly REPL
+            mp_hal_stdout_tx_str("\r\n");
+            goto friendly_repl_reset;
+        } else if (ret == CHAR_CTRL_C) {
+#else
         if (ret == CHAR_CTRL_C) {
+#endif
             // cancel input
             mp_hal_stdout_tx_str("\r\n");
             goto input_restart;
@@ -211,7 +237,11 @@ STATIC int do_repl(void) {
             printf("\n");
             mp_hal_stdio_mode_orig();
             vstr_clear(&line);
+#if MICROPY_EN_RAW_REPL
+            return PYEXEC_FORCED_EXIT;
+#else
             return 0;
+#endif
         } else if (ret == CHAR_CTRL_E) {
             // paste mode
             mp_hal_stdout_tx_str("\npaste mode; Ctrl-C to cancel, Ctrl-D to finish\n=== ");
@@ -724,7 +754,21 @@ MP_NOINLINE int main_(int argc, char **argv) {
     if (ret == NOTHING_EXECUTED || inspect) {
         if (isatty(0) || inspect) {
             prompt_read_history();
+            #if MICROPY_EN_RAW_REPL
+            for (;;) {
+                if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
+                    if (pyexec_raw_repl() != 0) {
+                        break;
+                    }
+                } else {
+                    if (do_repl() != 0) {
+                        break;
+                    }
+                }
+            }
+            #else
             ret = do_repl();
+            #endif
             prompt_write_history();
         } else {
             ret = execute_from_lexer(LEX_SRC_STDIN, NULL, MP_PARSE_FILE_INPUT, false);
