@@ -54,7 +54,7 @@
 #include "genhdr/mpversion.h"
 #include "input.h"
 #if MICROPY_EN_RAW_REPL
-#include "shared/runtime/pyexec.h"
+#include "pyexec.h"
 #endif
 
 // Command line options, with their defaults
