@@ -202,9 +202,9 @@ STATIC int do_repl(void) {
 friendly_repl_reset:
     mp_hal_stdout_tx_str(MICROPY_BANNER_NAME_AND_VERSION);
     mp_hal_stdout_tx_str("; " MICROPY_BANNER_MACHINE);
-    mp_hal_stdout_tx_str("\r\n");
+    mp_hal_stdout_tx_str("\n");
     #if MICROPY_PY_BUILTINS_HELP
-    mp_hal_stdout_tx_str("Type \"help()\" for more information.\r\n");
+    mp_hal_stdout_tx_str("Use Ctrl-D to exit repl, Type \"help()\" for more information.\n");
     #endif
 #endif
     for (;;) {
@@ -217,20 +217,20 @@ friendly_repl_reset:
 #if MICROPY_EN_RAW_REPL
         if (ret == CHAR_CTRL_A) {
             // change to raw REPL
-            mp_hal_stdout_tx_str("\r\n");
+            mp_hal_stdout_tx_str("\n");
             vstr_clear(&line);
             pyexec_mode_kind = PYEXEC_MODE_RAW_REPL;
             return 0;
         } else if (ret == CHAR_CTRL_B) {
             // reset friendly REPL
-            mp_hal_stdout_tx_str("\r\n");
+            mp_hal_stdout_tx_str("\n");
             goto friendly_repl_reset;
         } else if (ret == CHAR_CTRL_C) {
 #else
         if (ret == CHAR_CTRL_C) {
 #endif
             // cancel input
-            mp_hal_stdout_tx_str("\r\n");
+            mp_hal_stdout_tx_str("\n");
             goto input_restart;
         } else if (ret == CHAR_CTRL_D) {
             // EOF
