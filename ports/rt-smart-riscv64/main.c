@@ -727,7 +727,6 @@ MP_NOINLINE int main_(int argc, char **argv) {
         } else {
             // char *pathbuf = malloc(PATH_MAX);
             // char *basedir = realpath(argv[a], pathbuf);
-            // mp_printf(&mp_stderr_print, "file name:%s, pathbuf:%s, PATH_MAX:%d\n", argv[a], pathbuf, PATH_MAX);
             // if (basedir == NULL) {
             //     mp_printf(&mp_stderr_print, "%s: can't open file '%s': [Errno %d] %s\n", argv[0], argv[a], errno, strerror(errno));
             //     free(pathbuf);
