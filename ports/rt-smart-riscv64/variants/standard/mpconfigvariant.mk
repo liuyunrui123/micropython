@@ -9,4 +9,8 @@ mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 LD_FILES = $(dir $(mkfile_path))/../../link.lds
 LDFLAGS += -static -T ${LD_FILES}
 
+# 引用libffi库
+# INC += -I/home/ubuntu/work/k230/rtt_base/build/libffi-3.3/include
+# LDFLAGS += -L/home/ubuntu/work/k230/rtt_base/build/libffi-3.3/lib
+
 FROZEN_MANIFEST ?= $(VARIANT_DIR)/manifest.py
